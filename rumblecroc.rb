@@ -17,19 +17,14 @@ counter = 0
 
 urls.each do |url|
   puts CGI.escape(url) + " #{counter+=1}/#{urls.length}"
-  # 30
-  # 58
-  # 151
-  # 261
-  # 273 ... popup alert
-  # 335
-next unless counter > 335
+  # 273 has a popup
+  next if [30, 58, 151, 261, 335].include? current
   unless Ping.pingecho(url.gsub(/http\:\/\//, ''), 5, 80)
     puts "============================================================================"
     puts "Server not available for #{url}"
     puts "============================================================================"
     next
   end
-  `crocodile #{url} full/#{CGI.escape(url)}.png`
-  `sips --resampleWidth 256 full/#{CGI.escape(url)}.png --out small/#{CGI.escape(url)}.png`
+  `crocodile #{url} full/#{url.gsub(/http:\/\//)}.png`
+  `sips --resampleWidth 256 full/#{url.gsub(/http:\/\//)}.png --out small/#{url.gsub(/http:\/\//)}.png`
 end
